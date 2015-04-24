@@ -6,7 +6,7 @@ Its a loop, so `firetower "sleep 1"` will just keep going indefinitely.
 
 But the stuff in the middle is meant to be mucked with.
 
-`firetower "node server.js"` will keep running `node server.js` no matter ho, or how many times, it crashes.  
+`firetower "node server.js"` will keep running `node server.js` no matter how, or how many times, it crashes.  
 `firetower "ruby server.rb"` will do similarly. Which makes this an alternative to shotgun, or nodemon, or guard, or watchr.
 
 It introduces a tmpfile (`.firetower`) in the current directory, so this limits use to one concurant instance per directory, but lets you use `-s` and `-r` to stop or restart from another terminal or editor
