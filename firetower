@@ -1,0 +1,20 @@
+#!/bin/bash
+
+script=$0
+pid="$$"
+tmp_file=".watcher"
+command="$1"
+
+trap "rm -f $tmp_file ; exit 0" SIGTERM SIGINT EXIT
+
+while true
+do
+  { $command &
+    child=$!
+    echo "$$ $child" > $tmp_file
+    echo "Started: $1"
+    echo "pid, child-group"
+    cat $tmp_file
+  } | sed
+  echo
+done
