@@ -35,7 +35,7 @@ This doesn't listen to any file system events, so the second part to making this
 
 ## Editor hooks
 
-If you use Vim, throw the contents of this in your `.vimrc`
+If you use Vim, throw the contents of [this](https://github.com/mweitzel/firetower/blob/master/vim-hook.vim) in your `.vimrc`
 
 
 PRs welcome!
