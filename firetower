@@ -22,11 +22,17 @@ function run_child_command() {
 
 function restart_command() {
   cd "$(get_directory "$@")"
+  test -f $tmp_file_name || {
+    return 1
+  }
   kill "$(cat $tmp_file_name | cut -d ' ' -f 2)"
 }
 
 function stop_firetower() {
   cd "$(get_directory "$@")"
+  test -f $tmp_file_name || {
+    return 1
+  }
   kill $(cat $tmp_file_name)
   rm -f "$tmp_file_name"
 }
