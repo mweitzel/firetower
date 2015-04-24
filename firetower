@@ -25,7 +25,10 @@ function restart_command() {
   test -f $tmp_file_name || {
     return 1
   }
-  kill "$(cat $tmp_file_name | cut -d ' ' -f 2)"
+  # double tap - some programs request a "ctr-c again to exit"
+  child_id="$(cat $tmp_file_name | cut -d ' ' -f 2)"
+  kill -15 $child_id
+  kill -2 $child_id
 }
 
 function stop_firetower() {
