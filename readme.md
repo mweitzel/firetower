@@ -27,7 +27,7 @@ But the stuff in the middle is meant to be mucked with.
 `firetower "node server.js"` will keep running `node hello.js` no matter ho, or how many times, it crashes.  
 `firetower "ruby server.rb"` will do similarly. Which makes this an alternative to shotgun, or nodemon, or guard, or watchr.
 
-It introduces a tmpfile (.firetower) in the current directory, so this limits use to one concurant instance per directory, but lets you use `-s` and `-r` to stop or restart from another terminal or editor
+It introduces a tmpfile (`.firetower`) in the current directory, so this limits use to one concurant instance per directory, but lets you use `-s` and `-r` to stop or restart from another terminal or editor
 
 If you have `firetower "node server.js"` in one window, from another (with the same working directory) call `firetower -r` and your node server should restart.
 
