@@ -35,31 +35,7 @@ This doesn't listen to any file system events, so the second part to making this
 
 ## Editor hooks
 
-If you use Vim, throw this in your `.vimrc`:
+If you use Vim, throw the contents of this in your `.vimrc`
 
-```
-" set to 0 to default to off, 1 to default on
-let g:RunFiretower = 1
-
-function! ToggleFiretower()
-if g:RunFiretower == 1
-    let g:RunFiretower = 0
-    echo "firetower hook is disabled"
-else
-    let g:RunFiretower = 1
-    echo "firetower hook is enabled"
-endif
-endfunction
-
-function! ResetLocalFiretower()
-:if g:RunFiretower == 1
-  :silent ! ~/Projects/firetower/firetower -r
-:endif
-endfunction
-
-:command Firetower :call ToggleFiretower()
-
-autocmd BufWritePost * :call ResetLocalFiretower()
-```
 
 PRs welcome!
