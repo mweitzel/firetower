@@ -51,7 +51,7 @@ function stop_firetower() {
 }
 
 function usage() {
-  echo "usage: $0 [-h help] | [-c command | -r restart_command | -s stop_firetower ] [--directory=directory]"
+  echo "usage: firetower [-h help] | [-c command | -r restart_command | -s stop_firetower ] [--directory=directory]"
   exit 0
 }
 
