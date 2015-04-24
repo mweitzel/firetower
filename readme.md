@@ -1,20 +1,5 @@
 # Firetower
 
-## Installation
-
-- throw and appropriately chmodded (u+x) [firetower](https://github.com/mweitzel/firetower/blob/master/firetower) into your `~/usr/bin/`
-- make sure `~/usr/bin/` is part of your `$PATH`
-- add an [editor hook](#editor-hooks)
-
-##Options:
-
-```
-  -h help
-  -c command - accepts a command to be rand as a string
-  -r restart - restarts child process for existing firetower instance
-  -s stop    - stops existing firetower instance
-  [--directory=directory] specify directory, defaults to current
-```
 
 ## Description
 
@@ -37,5 +22,19 @@ This doesn't listen to any file system events, so the second part to making this
 
 If you use Vim, throw the contents of [this](https://github.com/mweitzel/firetower/blob/master/vim-hook.vim) in your `.vimrc`
 
+##Options:
+
+```
+  -h help
+  -c command - accepts a command to be rand as a string
+  -r restart - restarts child process for existing firetower instance
+  -s stop    - stops existing firetower instance
+  [--directory=directory] specify directory, defaults to current
+```
+## Installation
+
+- throw and appropriately chmodded (u+x) [firetower](https://github.com/mweitzel/firetower/blob/master/firetower) into your `~/usr/bin/`
+- make sure `~/usr/bin/` is part of your `$PATH`
+- add an [editor hook](#editor-hooks)
 
 PRs welcome!
