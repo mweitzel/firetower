@@ -8,10 +8,10 @@ throw `firetower` into your `~/usr/bin`
 
 ```
   -h help
-  -c command (default)
-  -r restart_command
-  -s stop_firetower
-  [--directory=directory] (defaults to current)
+  -c command - accepts a command to be rand as a string
+  -r restart - restarts child process for existing firetower instance
+  -s stop    - stops existing firetower instance
+  [--directory=directory] specify directory, defaults to current
 ```
 
 ## Description
