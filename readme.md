@@ -1,9 +1,6 @@
 # Firetower
 
-
-## Description
-
-Simple script to just keep running whatever command you give it.
+A simple script to just keep running whatever command you give it.
 
 Its a loop, so `firetower "sleep 1"` will just keep going indefinitely.
 
@@ -16,7 +13,7 @@ It introduces a tmpfile (`.firetower`) in the current directory, so this limits 
 
 If you have `firetower "node server.js"` in one window, from another (with the same working directory) call `firetower -r` and your node server should restart.
 
-This doesn't listen to any file system events, so the second part to making this useful is adding an editor hook.
+This doesn't listen to any file system events, so the second part to making this useful is adding an [editor hook](#editor-hooks).
 
 ## Editor hooks
 
