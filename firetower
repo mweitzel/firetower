@@ -1,12 +1,13 @@
 #!/bin/bash
 
-tmp_file_name=".watcher"
+tmp_file_name=".firetower"
 
 trap "rm -f $tmp_file_name ; exit 0" SIGTERM SIGINT EXIT
 
 function run_child_command() {
   local command="$(get_command "$@")"
   cd "$(get_directory "$@")"
+  abort_if_existing_tmp_file "$@"
   while true
   do
     { $command &
@@ -18,6 +19,15 @@ function run_child_command() {
     } | sed
     echo
   done
+}
+
+function abort_if_existing_tmp_file() {
+  test -f $tmp_file_name && {
+    echo "'.firetower' file already exists in $(pwd)"
+    echo "is there already a process using this directory?"
+    echo "aborting.."
+    exit 1
+  }
 }
 
 function restart_command() {
