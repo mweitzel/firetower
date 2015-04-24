@@ -2,7 +2,9 @@
 
 ## Installation
 
-throw `firetower` into your `~/usr/bin`
+- throw and appropriately chmodded (u+x) [firetower](https://github.com/mweitzel/firetower/blob/master/firetower) into your `~/usr/bin/`
+- make sure `~/usr/bin/` is part of your `$PATH`
+- add an [editor hook](#editor-hooks)
 
 ##Options:
 
