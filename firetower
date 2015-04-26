@@ -2,20 +2,54 @@
 
 tmp_file_name=".firetower"
 
-trap "rm -f $tmp_file_name ; exit 0" SIGTERM SIGINT EXIT
+
+waiting="0"
+child_pid=""
+
+function gentle_close() {
+  # clear lockfile with PIDs from directory
+  rm -f $tmp_file_name
+  # clear trap and send sigterm to process group
+  trap - SIGTERM && kill -- -$$
+}
+
+trap gentle_close SIGTERM SIGINT
+trap restart_child_command SIGHUP
+
+function restart_child_command() {
+  restart_hup_sent_since_this_iteration_started=true
+  child_pid=""
+}
+
+function set_child_pid() {
+  child_pid="$1"
+  echo $$ $child_pid > $tmp_file_name
+}
+
+function sleep_forever() {
+  exec sleep 1000000000
+}
+
+function announce_command_start() {
+  echo "firetower started: $1"
+  echo "pid, child-pid"
+  cat $tmp_file_name
+}
 
 function run_child_command() {
   local command="$(get_command "$@")"
   cd "$(get_directory "$@")"
   abort_if_existing_tmp_file "$@"
-  while true
-  do
+  while :; do
+    restart_hup_sent_since_this_iteration_started=""
     { $command &
-      child=$!
-      echo "$$ $child" > $tmp_file_name
-      echo "Started: $1"
-      echo "pid, child-pid"
-      cat $tmp_file_name
+      set_child_pid $!
+      announce_command_start "$command"
+    } | sed
+    test -n "$restart_hup_sent_since_this_iteration_started" && continue
+    {
+      sleep_forever &
+      set_child_pid $!
     } | sed
     echo
   done
@@ -35,8 +69,15 @@ function restart_command() {
   test -f $tmp_file_name || {
     return 1
   }
+
+  # send HUP to existing firetower so it will continue
+  # a HUP won't register until the parent process isn't blocked
+  # we send it first so it comes into effect immediately the blocking child dies
+  local firetower_id="$(cat $tmp_file_name | cut -d ' ' -f 1)"
+  kill -HUP $firetower_id
+
   # double tap - some programs request a "ctr-c again to exit"
-  child_id="$(cat $tmp_file_name | cut -d ' ' -f 2)"
+  local child_id="$(cat $tmp_file_name | cut -d ' ' -f 2)"
   kill -15 $child_id
   kill -2 $child_id
 }
