@@ -16,9 +16,10 @@ function restart_child_command() {
   restart_hup_sent_since_this_iteration_started=true
 }
 
-function set_child_pid() {
-  child_pid="$1"
-  echo $$ $child_pid > $tmp_file_name
+function rewrite_pid_tmpfile() {
+  local parent_pid="$1"
+  local child_pid="$2"
+  echo $parent_pid $child_pid > $tmp_file_name
 }
 
 function sleep_forever() {
