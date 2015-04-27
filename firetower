@@ -13,7 +13,7 @@ function gentle_close() {
 }
 
 function restart_child_command() {
-  restart_hup_sent_since_this_iteration_started=true
+  hup_sent_since_iteration_start=true
 }
 
 function rewrite_pid_tmpfile() {
@@ -43,18 +43,40 @@ function run_child_command() {
   cd "$(get_directory "$@")"
   abort_if_existing_tmp_file "$@"
   while :; do
-    restart_hup_sent_since_this_iteration_started=""
-    { $command &
-      set_child_pid $!
-      announce_command_start "$command"
-    } | sed
-    test -n "$restart_hup_sent_since_this_iteration_started" && continue
-    {
-      sleep_forever &
-      set_child_pid $!
-    } | sed
-    echo
+    hup_sent_since_iteration_start=""
+    fork_and_wait "$command" true
+    test -n "$hup_sent_since_iteration_start" && continue
+    fork_and_wait "sleep_forever"
   done
+}
+
+function fork_and_wait() {
+  local command="$1"
+  local display_output=$2
+
+  $command &                 # fork comand
+  rewrite_pid_tmpfile $$ $!  # store PIDs [this, last_background]
+  test -n "$display_output" && announce_command_start "$command"
+  wait_ $!                   # twiddle thumbs
+
+}
+
+function wait_() {
+  local pid="$1"
+  # `wait` doesn't always block until the process is compeletely closed
+  wait $pid
+  # so we make sure it closes
+  while process_is_alive $pid ; do sleep 0.01 ; done
+  # weird bugs preventing the next command from starting occur without this
+  # I believe its from when the HUP is recieved and 'restart_hup_sent...' is reset.
+  # this 'while' usually only blocks for a few iterations, if at all
+}
+
+function process_is_alive() {
+  ps |              # process status
+  grep -q "^$1 "    # check for certain pid
+  # from beginning ^, to first space, so we don't grep the grep or pids of which this is a substring.
+  # with -q the output is silenced, but the return value is 0
 }
 
 function abort_if_existing_tmp_file() {
