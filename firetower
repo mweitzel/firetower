@@ -2,9 +2,8 @@
 
 tmp_file_name=".firetower"
 
-
-waiting="0"
-child_pid=""
+trap gentle_close SIGTERM SIGINT
+trap restart_child_command SIGHUP
 
 function gentle_close() {
   # clear lockfile with PIDs from directory
@@ -13,12 +12,8 @@ function gentle_close() {
   trap - SIGTERM && kill -- -$$
 }
 
-trap gentle_close SIGTERM SIGINT
-trap restart_child_command SIGHUP
-
 function restart_child_command() {
   restart_hup_sent_since_this_iteration_started=true
-  child_pid=""
 }
 
 function set_child_pid() {
