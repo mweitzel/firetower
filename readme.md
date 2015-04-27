@@ -1,32 +1,32 @@
 # Firetower
 
-A simple script to just keep running whatever command you give it.
+Auto run commands from one terminal, restart from another.
 
-Its a loop, so `firetower "sleep 1"` will just keep going indefinitely.
+There are two main operations:
+- `-c` hosts a new command (assumed when no flag provided)
+- `-r` restarts an existing firetower
 
-But the stuff in the middle is meant to be mucked with.
+If you run a command with firetower (e.g. `firetower "node server.js"` or `firetower "rspec"`) in one shell session,
+calling `firetower -r` from another will restart the command in the original.
 
-`firetower "node server.js"` will keep running `node server.js` no matter how, or how many times, it crashes.  
-`firetower "ruby server.rb"` will do similarly. Which makes this an alternative to shotgun, or nodemon, or guard, or watchr.
+The host creates a temporary file `.firetower` to store PIDs and assumes your working directory unless you can specify otherwise.
 
-It introduces a tmpfile (`.firetower`) in the current directory, so this limits use to one concurant instance per directory, but lets you use `-s` and `-r` to stop or restart from another terminal or editor
-
-If you have `firetower "node server.js"` in one window, from another (with the same working directory) call `firetower -r` and your node server should restart.
-
-This doesn't listen to any file system events, so the second part to making this useful is adding an [editor hook](#editor-hooks).
+The `firetower` script is exclusively responsible for running and restarting a command. It does not listen to file system events, so if you want to rerun a script every time your files change, you can use an [editor hook](#editor-hooks).
 
 ## Editor hooks
 
 If you use Vim, throw the contents of [this](https://github.com/mweitzel/firetower/blob/master/vim-hook.vim) in your `.vimrc`
 
-##Options:
+## Options:
 
 ```
+usage: firetower [-h | -c | -r | -s] [command] [--directory=directory] [--clear-scrollback]
   -h help
   -c command - accepts a command to be rand as a string
   -r restart - restarts child process for existing firetower instance
   -s stop    - stops existing firetower instance
   [--directory=directory] specify directory, defaults to current
+  [--clear-scrollback] clear scrollback on reach restart
 ```
 ## Installation
 

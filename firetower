@@ -116,7 +116,13 @@ function stop_firetower() {
 }
 
 function usage() {
-  echo "usage: firetower [-h help] | [-c command | -r restart_command | -s stop_firetower ] [--directory=directory]"
+  echo "usage: firetower [-h | -c | -r | -s] [command] [--directory=directory] [--clear-scrollback]
+  -h help
+  -c command - accepts a command to be rand as a string
+  -r restart - restarts child process for existing firetower instance
+  -s stop    - stops existing firetower instance
+  [--directory=directory] specify directory, defaults to current
+  [--clear-scrollback] clear scrollback on reach restart "
   exit 0
 }
 
