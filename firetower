@@ -27,12 +27,18 @@ function sleep_forever() {
 }
 
 function announce_command_start() {
-  echo "firetower started: $1"
-  echo "pid, child-pid"
-  cat $tmp_file_name
+  test -n "$clear_scrollback" && {
+    echo -en '\0033\0143'                # clear most terminals
+    echo -en '\033]50;ClearScrollback\a' # clear iTerm
+  }
+  pwd
+  echo "firetower started \`$1\` at $(date $T)"
+  echo
 }
 
 function run_child_command() {
+  clear_scrollback=$(should_clear_scrollback "$@")
+
   local command="$(get_command "$@")"
   cd "$(get_directory "$@")"
   abort_if_existing_tmp_file "$@"
@@ -111,6 +117,14 @@ function get_flag() {
   else
     echo 'run_child_command'
   fi
+}
+
+function should_clear_scrollback() {
+  for var in "$@" ; do
+    if [[ $var == --clear-scrollback ]] ; then
+      echo true && return
+    fi
+  done
 }
 
 function get_directory() {
