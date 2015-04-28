@@ -2,6 +2,8 @@
 
 Auto run commands from one terminal, restart from another.
 
+Simple alternative to guard//wachr/whatever/grunt-watch in bash with no dependencies.
+
 There are two main operations:
 - `-c` hosts a new command (assumed when no flag provided)
 - `-r` restarts an existing firetower
@@ -42,3 +44,9 @@ usage: firetower [-h | -c | -r | -s] [command] [--directory=directory] [--preser
 - add an [editor hook](#editor-hooks)
 
 PRs welcome!
+
+## Example
+
+Here is an example of tests running on every save:
+
+![firetower rspec example](http://i.imgur.com/vtnPqCN.gif "rspec example")
