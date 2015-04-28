@@ -20,13 +20,13 @@ If you use Vim, throw the contents of [this](https://github.com/mweitzel/firetow
 ## Options:
 
 ```
-usage: firetower [-h | -c | -r | -s] [command] [--directory=directory] [--clear-scrollback]
+usage: firetower [-h | -c | -r | -s] [command] [--directory=directory] [--preserve-scrollback]
   -h help
   -c command - accepts a command to be rand as a string
   -r restart - restarts child process for existing firetower instance
   -s stop    - stops existing firetower instance
   [--directory=directory] specify directory, defaults to current
-  [--clear-scrollback] clear scrollback on reach restart
+  [--preserve-scrollback] don't clear terminal on each restart
 ```
 ## Installation
 

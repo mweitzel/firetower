@@ -27,7 +27,7 @@ function sleep_forever() {
 }
 
 function announce_command_start() {
-  test -n "$clear_scrollback" && {
+  test -n "$preserve_scrollback" || {
     echo -en '\0033\0143'                # clear most terminals
     echo -en '\033]50;ClearScrollback\a' # clear iTerm
   }
@@ -37,7 +37,7 @@ function announce_command_start() {
 }
 
 function run_child_command() {
-  clear_scrollback=$(should_clear_scrollback "$@")
+  preserve_scrollback=$(should_preserve_scrollback "$@")
 
   local command="$(get_command "$@")"
   cd "$(get_directory "$@")"
@@ -116,13 +116,13 @@ function stop_firetower() {
 }
 
 function usage() {
-  echo "usage: firetower [-h | -c | -r | -s] [command] [--directory=directory] [--clear-scrollback]
+  echo "usage: firetower [-h | -c | -r | -s] [command] [--directory=directory] [--preserve-scrollback]
   -h help
   -c command - accepts a command to be rand as a string
   -r restart - restarts child process for existing firetower instance
   -s stop    - stops existing firetower instance
   [--directory=directory] specify directory, defaults to current
-  [--clear-scrollback] clear scrollback on reach restart "
+  [--preserve-scrollback] don't clear terminal on each restart "
   exit 0
 }
 
@@ -147,9 +147,9 @@ function get_flag() {
   fi
 }
 
-function should_clear_scrollback() {
+function should_preserve_scrollback() {
   for var in "$@" ; do
-    if [[ $var == --clear-scrollback ]] ; then
+    if [[ $var == --preserve-scrollback ]] ; then
       echo true && return
     fi
   done
