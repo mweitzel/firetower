@@ -1,3 +1,5 @@
+" add to ~/.vimrc, it will restart existing firetowers for that directory
+
 " function that restarts firetower instance for current working direcotry
 function! ResetLocalFiretower()
   :silent ! firetower -r

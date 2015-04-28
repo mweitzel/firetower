@@ -1,3 +1,5 @@
+" add to ~/.vimrc, it will restart existing firetowers for that directory
+
 " set to 0 to default to off, 1 to default on
 let g:RunFiretower = 1
 
