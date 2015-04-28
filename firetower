@@ -54,9 +54,9 @@ function fork_and_wait() {
   local command="$1"
   local display_output=$2
 
+  test -n "$display_output" && announce_command_start "$command"
   $command &                 # fork comand
   rewrite_pid_tmpfile $$ $!  # store PIDs [this, last_background]
-  test -n "$display_output" && announce_command_start "$command"
   wait_ $!                   # twiddle thumbs
 
 }
