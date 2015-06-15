@@ -65,6 +65,7 @@ function wait_() {
   local pid="$1"
   # `wait` doesn't always block until the process is compeletely closed
   wait $pid
+  printf "\nexit code: $?\n"
   # so we make sure it closes
   while process_is_alive $pid ; do sleep 0.01 ; done
   # weird bugs preventing the next command from starting occur without this
