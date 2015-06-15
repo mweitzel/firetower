@@ -1,8 +1,22 @@
 # Firetower
 
-Auto run commands from one terminal, restart from another.
+Firetower makes it easy to re-run commands while developing.
 
-Simple alternative to guard//wachr/whatever/grunt-watch in bash with no dependencies.
+There's two parts: the `firetower` function to host a command, and editor hooks that wrap the restart function and call it upon saving. Those just restart existing `firetower`s in the same working directory, so they are usually one liners.
+
+It doesn't listening to file system events or anything crazy like that. But taking advantage of the save hooks offered by most editors make for a much simpler alternative to guard/wachr/grunt-watch/whatever.
+
+In bash. With no dependencies.
+
+## Typical Use
+
+- run `firetower "any command"` (tests, servers, etc.)
+- relax as it restarts every time you save from an editor in the same working directory
+
+Here's how to [install it](#Installation)  
+Here's an example [gif](#example)
+
+## How it works
 
 There are two main operations:
 - `-c` hosts a new command (assumed when no flag provided)
