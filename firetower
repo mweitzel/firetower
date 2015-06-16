@@ -27,13 +27,29 @@ function sleep_forever() {
 }
 
 function announce_command_start() {
+  local command="$1"
   test -n "$preserve_scrollback" || {
     echo -en '\0033\0143'                # clear most terminals
     echo -en '\033]50;ClearScrollback\a' # clear iTerm
   }
   pwd
-  echo "firetower started \`$1\` at $(date $T)"
+  echo "firetower started \`$command\` at $(date $T)"
   echo
+  title $command
+}
+
+function announce_command_finish() {
+  local command="$1"
+  local ecode="$2"
+  printf "\nexit code: $ecode\n"
+  title "($ecode) $command"
+}
+
+function title() {
+  local text=$*
+  echo -ne "\033]0;$text\007"
+  #          ESC         BEL
+  # http://tldp.org/HOWTO/Xterm-Title-4.html
 }
 
 function run_child_command() {
@@ -58,19 +74,21 @@ function fork_and_wait() {
   $command &                 # fork comand
   rewrite_pid_tmpfile $$ $!  # store PIDs [this, last_background]
   wait_ $!                   # twiddle thumbs
-
+  local ecode=$?
+  test -n "$display_output" && announce_command_finish "$command" "$ecode"
 }
 
 function wait_() {
   local pid="$1"
   # `wait` doesn't always block until the process is compeletely closed
   wait $pid
-  printf "\nexit code: $?\n"
+  local ecode=$?
   # so we make sure it closes
   while process_is_alive $pid ; do sleep 0.01 ; done
   # weird bugs preventing the next command from starting occur without this
   # I believe its from when the HUP is recieved and 'restart_hup_sent...' is reset.
   # this 'while' usually only blocks for a few iterations, if at all
+  return $ecode
 }
 
 function process_is_alive() {
