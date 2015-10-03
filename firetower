@@ -26,6 +26,7 @@ function rewrite_pid_tmpfile() {
 
 function sleep_forever() {
   exec sleep 1000000000
+  # 'exec' here ensures the sleep process ends on HUP
 }
 
 function announce_command_start() {
