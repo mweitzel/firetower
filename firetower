@@ -62,7 +62,7 @@ function run_child_command() {
   abort_if_existing_tmp_file "$@"
   while :; do
     hup_sent_since_iteration_start=""
-    fork_and_wait "$command" true
+    time fork_and_wait "$command" true
     test -n "$hup_sent_since_iteration_start" && continue
     fork_and_wait "sleep_forever"
   done
