@@ -94,7 +94,12 @@ function wait_() {
   return $ecode
 }
 
+function is_integer() {
+  test "$1" -eq "$1" >/dev/null 2>&1
+}
+
 function process_is_alive() {
+  is_integer $1 || return $? # return unless integer
   ps |              # process status
   grep -q "^$1 "    # check for certain pid
   # from beginning ^, to first space, so we don't grep the grep or pids of which this is a substring.
