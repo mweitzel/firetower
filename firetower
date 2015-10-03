@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# exit codes
+# firetower -r specific
+EC_RESTART_NO_PID_FILE=3           # no .firetower file
+EC_RESTART_ILLEGAL_PARENT_ID=4     # first process ID in .firetower isn't alive
+EC_RESTART_ILLEGAL_CHILD_ID=5      # second process ID in .firetower isn't alive
+
 tmp_file_name=".firetower"
 
 trap gentle_close SIGTERM SIGINT
@@ -117,20 +123,24 @@ function abort_if_existing_tmp_file() {
 
 function restart_command() {
   cd "$(get_directory "$@")"
-  test -f $tmp_file_name || {
-    return 1
-  }
+  test -f $tmp_file_name || return $EC_RESTART_NO_PID_FILE
 
   # send HUP to existing firetower so it will continue
   # a HUP won't register until the parent process isn't blocked
   # we send it first so it comes into effect immediately the blocking child dies
   local firetower_id="$(cat $tmp_file_name | cut -d ' ' -f 1)"
+  process_is_alive $firetower_id || return $EC_RESTART_ILLEGAL_PARENT_ID
+
   kill -HUP $firetower_id
 
   # double tap - some programs request a "ctr-c again to exit"
   local child_id="$(cat $tmp_file_name | cut -d ' ' -f 2)"
+  process_is_alive $child_id || return $EC_RESTART_ILLEGAL_CHILD_ID
+
+  # SIGTERM
   kill -15 $child_id
-  kill -2 $child_id
+  # SIGINT (ctrl-c)
+  kill -2  $child_id
 }
 
 function stop_firetower() {
