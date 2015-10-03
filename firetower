@@ -8,6 +8,8 @@ trap restart_child_command SIGHUP
 function gentle_close() {
   # clear lockfile with PIDs from directory
   rm -f $tmp_file_name
+  # clear title
+  title
   # clear trap and send sigterm to process group
   trap - SIGTERM && kill -- -$$
 }
