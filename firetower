@@ -105,11 +105,7 @@ function is_integer() {
 }
 
 function process_is_alive() {
-  is_integer $1 || return $? # return unless integer
-  ps |              # process status
-  grep -q "^$1 "    # check for certain pid
-  # from beginning ^, to first space, so we don't grep the grep or pids of which this is a substring.
-  # with -q the output is silenced, but the return value is 0
+  kill -0 $1 >/dev/null 2>&1
 }
 
 function abort_if_existing_tmp_file() {
