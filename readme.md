@@ -13,7 +13,7 @@ In bash. With no dependencies.
 - run `firetower "any command"` (tests, servers, etc.)
 - relax as it restarts every time you save from an editor in the same working directory
 
-Here's how to [install it](#Installation)  
+Here's how to [install it](#installation)  
 Here's an example [gif](#example)
 
 ## How it works
