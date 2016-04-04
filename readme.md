@@ -70,6 +70,7 @@ PRs welcome!
 
 ## Example
 
-Here is an example of tests running on every save:
+Here is an example showing a command running on every save:
 
-![firetower rspec example](http://i.imgur.com/vtnPqCN.gif "rspec example")
+![node hello](https://cloud.githubusercontent.com/assets/318925/14260206/66b99c7a-fa78-11e5-9a7a-8dd11587fa99.gif "rspec example")
+
