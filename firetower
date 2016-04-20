@@ -71,20 +71,27 @@ function run_child_command() {
     hup_sent_since_iteration_start=""
     time fork_and_wait "$command" true
     test -n "$hup_sent_since_iteration_start" && continue
-    fork_and_wait "sleep_forever"
+    fork_and_wait "sleep_forever" false true
   done
 }
+
+
 
 function fork_and_wait() {
   local command="$1"
   local display_output=$2
+  local command_is_local_function=$3
 
-  test -n "$display_output" && announce_command_start "$command"
-  $command &                 # fork comand
+  test "$display_output" = true && announce_command_start "$command"
+  test "$command_is_local_function" = true && {
+    "$command" &     # fork comand
+  } || {
+    bash -c "$command" &     # fork comand
+  }
   rewrite_pid_tmpfile $$ $!  # store PIDs [this, last_background]
   wait_ $!                   # twiddle thumbs
   local ecode=$?
-  test -n "$display_output" && announce_command_finish "$command" "$ecode"
+  test "$display_output" = true && announce_command_finish "$command" "$ecode"
 }
 
 function wait_() {
