@@ -228,4 +228,5 @@ function debug() {
 function main() {
   $(get_flag "$@") "$@"
 }
-main "$@"
+
+test $SOURCE_FIRETOWER_FOR_UNIT_TESTING || main "$@"

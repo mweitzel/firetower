@@ -1,0 +1,29 @@
+#!/bin/bash
+
+SOURCE_FIRETOWER_FOR_UNIT_TESTING=1
+
+source ./firetower
+
+set -e # fail on first failed test
+
+# get_command returns command whether or not -c is specified
+(
+  test "$(get_command -c 'some command')" = 'some command'
+  test "$(get_command    'some command')" = 'some command'
+)
+
+# is_integer exits with 0 only if string is integer
+(
+  is_integer 5     ; test $? -eq 0
+  is_integer asdf || test $? -eq 2
+)
+
+# process_is_alive exits with 0 only if process is alive
+(
+  sleep 1 &
+  invalid_pid=1111111111111111111 #clearly
+  process_is_alive $?            ; test $? -eq 0
+  process_is_alive $invalid_pid || test $? -eq 1
+)
+
+echo 'done'
