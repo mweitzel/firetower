@@ -74,3 +74,6 @@ Here is an example showing a command running on every save:
 
 ![node hello](https://cloud.githubusercontent.com/assets/318925/14260206/66b99c7a-fa78-11e5-9a7a-8dd11587fa99.gif "rspec example")
 
+## License
+
+MIT
