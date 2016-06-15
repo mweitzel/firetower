@@ -62,7 +62,7 @@ function title() {
 }
 
 function run_child_command() {
-  preserve_scrollback=$(should_preserve_scrollback "$@")
+  should_preserve_scrollback "$@" && preserve_scrollback=true
 
   local command="$(get_command "$@")"
   cd "$(get_directory "$@")"
@@ -190,9 +190,10 @@ function get_flag() {
 function should_preserve_scrollback() {
   for var in "$@" ; do
     if [[ $var == --preserve-scrollback ]] ; then
-      echo true && return
+      return 0
     fi
   done
+  return 1
 }
 
 function get_directory() {
