@@ -4,26 +4,54 @@ SOURCE_FIRETOWER_FOR_UNIT_TESTING=1
 
 source ./firetower
 
-set -e # fail on first failed test
+plan=11
+
+function pass() { plan=$(($plan - 1)); }
+function fail() { echo fail at $(caller); exit 1 ; }
 
 # get_command returns command whether or not -c is specified
-(
-  test "$(get_command -c 'some command')" = 'some command'
-  test "$(get_command    'some command')" = 'some command'
-)
+t(){
+test "$(get_command -c 'some command')" = 'some command' && pass || fail
+test "$(get_command    'some command')" = 'some command' && pass || fail
+};t
 
 # is_integer exits with 0 only if string is integer
-(
-  is_integer 5     ; test $? -eq 0
-  is_integer asdf || test $? -eq 2
-)
+t(){
+  is_integer 5    && pass || fail
+  is_integer asdf && fail || pass
+};t
 
 # process_is_alive exits with 0 only if process is alive
-(
+t(){
   sleep 1 &
-  invalid_pid=1111111111111111111 #clearly
-  process_is_alive $?            ; test $? -eq 0
-  process_is_alive $invalid_pid || test $? -eq 1
-)
+  local invalid_pid=1111111111111111111 #clearly
+  process_is_alive $?           && pass || fail # test $? -eq 0
+  process_is_alive $invalid_pid || pass || fail # test $? -eq 1
+};t
 
-echo 'done'
+# should_preserve_scrollback exits with 0 only if --preserve-scrollback is an argument
+t() {
+  should_preserve_scrollback 'banana pants' --preserve-scrollback && pass || fail
+  should_preserve_scrollback --preserve-scrollback 'banana pants' && pass || fail
+  should_preserve_scrollback 'there is not preserve scrollback'   && fail || pass
+};t
+
+# announce_command_start announces command
+t() {
+  announce_command_start 'ls potato sandwich' |
+    grep -q 'firetower started `ls potato sandwich` at' && pass || fail
+};t
+
+# announce_command_finish formats command and exit code into a formatted display
+t() {
+  announce_command_finish 'ls potato sandwich' 123 |
+    grep -q 'exit code: 123' && pass || fail
+};t
+
+test $plan -eq 0 && pass || {
+  echo "expected $plan more passing tests"
+  fail
+}
+
+echo 'success'
+exit 0
