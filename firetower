@@ -6,6 +6,8 @@ EC_RESTART_NO_PID_FILE=3           # no .firetower file
 EC_RESTART_ILLEGAL_PARENT_ID=4     # first process ID in .firetower isn't alive
 EC_RESTART_ILLEGAL_CHILD_ID=5      # second process ID in .firetower isn't alive
 
+FOREVER_SECONDS=1000000000         # still a bash int, but effectively forever
+
 tmp_file_name=".firetower"
 
 trap gentle_close SIGTERM SIGINT
@@ -71,23 +73,16 @@ function run_child_command() {
     hup_sent_since_iteration_start=""
     time fork_and_wait "$command" true
     test -n "$hup_sent_since_iteration_start" && continue
-    fork_and_wait "sleep_forever" false true
+    fork_and_wait "sleep $FOREVER_SECONDS" false
   done
 }
-
-
 
 function fork_and_wait() {
   local command="$1"
   local display_output=$2
-  local command_is_local_function=$3
 
   test "$display_output" = true && announce_command_start "$command"
-  test "$command_is_local_function" = true && {
-    "$command" &     # fork comand
-  } || {
-    bash -c "$command" &     # fork comand
-  }
+  bash -c "$command" &     # fork comand
   rewrite_pid_tmpfile $$ $!  # store PIDs [this, last_background]
   wait_ $!                   # twiddle thumbs
   local ecode=$?
