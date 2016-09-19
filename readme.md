@@ -32,7 +32,7 @@ $ firetower "rspec"
 
 Kill it with `ctrl-c`
 
-Restart it with `firetower -r` from the same working directory.
+Restart it with `firetower -r` from the same working directory, or with CTR-R in the hosting terminal.
 
 The host creates a temporary file `.firetower` to store PIDs and assumes your working directory unless you can specify otherwise.
 
