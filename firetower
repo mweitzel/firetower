@@ -63,7 +63,18 @@ function title() {
   # http://tldp.org/HOWTO/Xterm-Title-4.html
 }
 
+function UI_restart() {
+  ( firetower -r & ) 2>&1 > /dev/null
+}
+
+function accept_ctr_r_for_restart() {
+  stty quit ^r
+  trap UI_restart SIGQUIT
+}
+
 function run_child_command() {
+  accept_ctr_r_for_restart
+
   should_preserve_scrollback "$@" && preserve_scrollback=true
 
   local command="$(get_command "$@")"
