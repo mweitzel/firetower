@@ -54,7 +54,7 @@ I primarily use vim and would appreciate pull requests with hooks for other edit
 ```
 usage: firetower [-h | -c | -r | -s] [command] [--directory=directory] [--preserve-scrollback]
   -h help
-  -c command - accepts a command to be rand as a string
+  -c command - accepts a command to be ran as a string
   -r restart - restarts child process for existing firetower instance
   -s stop    - stops existing firetower instance
   [--directory=directory] specify directory, defaults to current
