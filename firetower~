@@ -216,6 +216,8 @@ function get_directory() {
   echo "./"
 }
 
+
+
 function get_command() {
   local flag_passed=""
   local first_arg=$1
