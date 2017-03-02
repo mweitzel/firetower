@@ -195,7 +195,7 @@ function get_flag() {
 
 function should_preserve_scrollback() {
   for var in "$@" ; do
-    if [[ $var == --preserve-scrollback ]] ; then
+    if [[ $var == --preserve-scrollback ]] || [[ $var == -p ]] ; then
       return 0
     fi
   done
@@ -203,10 +203,15 @@ function should_preserve_scrollback() {
 }
 
 function get_directory() {
-  for var in "$@"
-  do
-    if [[ $var == --directory=* ]] ; then
-      echo "$var" | cut -d '=' -f 2
+  for (( i=1; i<=$#; i++)); do
+    j=$((i+1))
+    local flag=${!i}
+    local dir_name=${!j}
+    if ( [[ $flag == -d ]] && [[ $dir_name == * ]] ) ; then
+      echo "$dir_name"
+      return
+    elif ( [[ $flag == --directory=* ]] ) ; then
+      echo "$flag" | cut -d '=' -f 2
       return
     fi
   done
