@@ -78,7 +78,10 @@ function run_child_command() {
   should_preserve_scrollback "$@" && preserve_scrollback=true
 
   local command="$(get_command "$@")"
-  cd "$(get_directory "$@")"
+  dir="$(get_directory "$@")"
+  var=$?
+  cd $dir
+  abort_if_dir_is_null $var 
   abort_if_existing_tmp_file "$@"
   while :; do
     hup_sent_since_iteration_start=""
@@ -129,6 +132,12 @@ function abort_if_existing_tmp_file() {
     exit 1
   }
 }
+function abort_if_dir_is_null() {
+  if ( [[ $1 == 0 ]] ) ; then
+    usage
+    #exit 1
+  fi
+}
 
 function restart_command() {
   cd "$(get_directory "$@")"
@@ -162,13 +171,13 @@ function stop_firetower() {
 }
 
 function usage() {
-  echo "usage: firetower [-h | -c | -r | -s] [command] [--directory=directory] [--preserve-scrollback]
+  echo "usage: firetower [-h | -c | -r | -s] [command] [--directory=directory | -d directory] [--preserve-scrollback | -p]
   -h help
   -c command - accepts a command to be rand as a string
   -r restart - restarts child process for existing firetower instance
   -s stop    - stops existing firetower instance
-  [--directory=directory] specify directory, defaults to current
-  [--preserve-scrollback] don't clear terminal on each restart "
+  [--directory=directory | -d directory] specify directory
+  [--preserve-scrollback | -p] don't clear terminal on each restart "
   exit 0
 }
 
@@ -206,15 +215,25 @@ function get_directory() {
   for (( i=1; i<=$#; i++)); do
     j=$((i+1))
     local flag=${!i}
-    local dir_name=${!j}
-    if ( [[ $flag == -d ]] && [[ $dir_name == * ]] ) ; then
-      echo "$dir_name"
-      return
+    if ( [[ $flag == -d ]] ) ; then
+      local dir_name=${!j}
+      if ( [[ ${#dir_name} > 0 ]] ) ; then
+        echo $dir_name
+        return 1
+      else
+        return 0
+      fi
     elif ( [[ $flag == --directory=* ]] ) ; then
-      echo "$flag" | cut -d '=' -f 2
-      return
+      dir_name=$(echo "$flag" | cut -d '=' -f 2)
+      if ( [[ ${#dir_name} > 0 ]] ) ; then
+        echo $dir_name
+        return 1
+      else
+        return 0
+      fi
     fi
   done
+  return 1
   echo "./"
 }
 
